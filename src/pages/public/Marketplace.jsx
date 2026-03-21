@@ -13,19 +13,19 @@ export default function Marketplace() {
   const [locationFilter, setLocationFilter] = useState('');
 
   const filteredInternships = internships.filter(intern => {
-    const matchesSearch = intern.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          intern.company.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = intern.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      intern.company.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesType = typeFilter === 'All' || intern.type === typeFilter;
     const matchesRole = roleFilter === 'All' || intern.title.toLowerCase().includes(roleFilter.toLowerCase());
     const matchesLocation = intern.location.toLowerCase().includes(locationFilter.toLowerCase());
-    
+
     return matchesSearch && matchesType && matchesRole && matchesLocation;
   });
 
   return (
     <div className="bg-[#000000] min-h-screen py-32">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -36,7 +36,7 @@ export default function Marketplace() {
         </motion.div>
 
         {/* Filters and Search */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
@@ -54,7 +54,7 @@ export default function Marketplace() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          
+
           <div className="flex-1 relative">
             <input
               type="text"
@@ -95,7 +95,7 @@ export default function Marketplace() {
             </select>
           </div>
 
-          <button 
+          <button
             onClick={() => {
               setSearchTerm('');
               setTypeFilter('All');
@@ -116,15 +116,15 @@ export default function Marketplace() {
         ) : filteredInternships.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredInternships.map((internship, index) => (
-              <InternshipCard 
-                key={internship.id} 
-                internship={internship} 
+              <InternshipCard
+                key={internship.id}
+                internship={internship}
                 index={index}
               />
             ))}
           </div>
         ) : (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }}
             className="text-center py-32"
           >
