@@ -13,24 +13,24 @@ export default function Analytics() {
   return (
     <div className="max-w-6xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">Platform Overview</h1>
-        <p className="text-gray-600">Analytics and key metrics for InternConnect.</p>
+        <h1 className="text-2xl font-bold text-white mb-2">Platform Overview</h1>
+        <p className="text-[#a1a1aa]">Analytics and key metrics for InternConnect.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {stats.map((stat, idx) => (
-          <div key={idx} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col">
+          <div key={idx} className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] p-6 flex flex-col">
             <div className="flex justify-between items-start mb-4">
               <div className={`p-3 rounded-xl ${stat.bg} ${stat.color}`}>
                 <stat.icon className="w-6 h-6" />
               </div>
-              <span className="text-sm font-medium text-green-600 bg-green-50 px-2 py-1 rounded-md flex items-center">
+              <span className="text-sm font-medium text-green-600 bg-green-900/30 px-2 py-1 rounded-md flex items-center">
                 +12% <TrendingUp className="w-3 h-3 ml-1" />
               </span>
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500 mb-1">{stat.name}</p>
-              <h3 className="text-2xl font-bold text-gray-900">{stat.value}</h3>
+              <p className="text-sm font-medium text-[#a1a1aa] mb-1">{stat.name}</p>
+              <h3 className="text-2xl font-bold text-white">{stat.value}</h3>
             </div>
           </div>
         ))}
@@ -38,23 +38,23 @@ export default function Analytics() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Placeholder Chart 1 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-900">Application Trends</h3>
+            <h3 className="text-lg font-bold text-white">Application Trends</h3>
             <Activity className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+          <div className="h-64 flex items-center justify-center border-2 border-dashed border-[#333333] rounded-lg bg-[#0a0a0a]">
             <span className="text-sm text-gray-400 font-medium tracking-wide">[Chart Component Placeholder: e.g. Line Chart]</span>
           </div>
         </div>
 
         {/* Placeholder Chart 2 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] p-6">
           <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-bold text-gray-900">User Demographics</h3>
+            <h3 className="text-lg font-bold text-white">User Demographics</h3>
             <Users className="w-5 h-5 text-gray-400" />
           </div>
-          <div className="h-64 flex items-center justify-center border-2 border-dashed border-gray-200 rounded-lg bg-gray-50">
+          <div className="h-64 flex items-center justify-center border-2 border-dashed border-[#333333] rounded-lg bg-[#0a0a0a]">
             <span className="text-sm text-gray-400 font-medium tracking-wide">[Chart Component Placeholder: e.g. Donut Chart]</span>
           </div>
         </div>

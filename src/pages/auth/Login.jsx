@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { LogIn } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
-import { Briefcase } from 'lucide-react';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -11,15 +13,21 @@ export default function Login() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
+
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const isFormValid = email.trim() && isEmailValid && password.length >= 1;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
       const user = await login(email, password);
-      // Redirect based on role
+      addToast('Welcome back to Workly!', 'success');
+      // Route based on role
       navigate(`/${user.role}`);
     } catch (err) {
       setError(err.message || 'Failed to login');
@@ -29,75 +37,92 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
-        <div className="text-center mb-8">
-          <div className="inline-flex bg-blue-600 p-2 rounded-xl mb-4">
-            <Briefcase className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome back</h2>
-          <p className="text-gray-500 text-sm">
-            Please login to Student, Company, or Admin dashboard. Use dummy emails like student@test.com
-          </p>
-        </div>
+    <div className="min-h-screen bg-black flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] bg-blue-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-        {error && (
-          <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg border border-red-100 mb-6 text-center">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-5">
-          <Input
-            label="Email Address"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="you@example.com"
-          />
-          
-          <Input
-            label="Password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="••••••••"
-          />
-
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-              />
-              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
-                Remember me
-              </label>
-            </div>
-
-            <div className="text-sm">
-              <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
-                Forgot password?
-              </a>
-            </div>
-          </div>
-
-          <Button type="submit" className="w-full py-2.5" disabled={loading}>
-            {loading ? 'Signing in...' : 'Sign in'}
-          </Button>
-        </form>
-
-        <p className="mt-8 text-center text-sm text-gray-600">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center"
+      >
+        <h2 className="text-4xl font-bold text-white tracking-tight mb-2">Welcome back</h2>
+        <p className="text-[#a1a1aa] text-lg">
           Don't have an account?{' '}
-          <Link to="/signup" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to="/signup" className="font-semibold text-white hover:text-blue-400 transition-colors">
             Sign up
           </Link>
         </p>
-      </div>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+      >
+        <div className="bg-[#111111] py-10 px-4 shadow-2xl border border-[#1f1f1f] sm:rounded-3xl sm:px-10">
+          
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="bg-red-900/20 border border-red-900/50 rounded-xl p-4">
+                <p className="text-sm text-red-500">{error}</p>
+              </div>
+            )}
+            
+            <Input
+              label="Email address"
+              type="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              autoComplete="current-password"
+              required
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-[#333333] bg-[#1a1a1a] rounded"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-[#a1a1aa]">
+                  Remember me
+                </label>
+              </div>
+
+              <div className="text-sm">
+                <a href="#" className="font-medium text-white hover:text-blue-400">
+                  Forgot password?
+                </a>
+              </div>
+            </div>
+
+            <div>
+              <Button type="submit" className="w-full py-3.5 text-base shadow-[0_0_30px_-10px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" disabled={loading || !isFormValid}>
+                {loading ? 'Signing in...' : (
+                  <>
+                    <LogIn className="w-5 h-5 mr-2" />
+                    Sign in
+                  </>
+                )}
+              </Button>
+            </div>
+          </form>
+
+        </div>
+      </motion.div>
     </div>
   );
 }

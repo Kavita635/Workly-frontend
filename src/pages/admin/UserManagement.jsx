@@ -7,19 +7,19 @@ export default function UserManagement() {
   return (
     <div className="max-w-6xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">User Management</h1>
-        <p className="text-gray-600">View and manage all registered users on the platform.</p>
+        <h1 className="text-2xl font-bold text-white mb-2">User Management</h1>
+        <p className="text-[#a1a1aa]">View and manage all registered users on the platform.</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-4 border-b border-gray-100 bg-gray-50 flex items-center justify-between">
+      <div className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] overflow-hidden">
+        <div className="p-4 border-b border-[#1f1f1f] bg-[#0a0a0a] flex items-center justify-between">
           <div className="relative max-w-sm w-full">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-gray-400" />
             </div>
             <input
               type="text"
-              className="block w-full pl-9 pr-3 py-2 border border-gray-200 rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
+              className="block w-full pl-9 pr-3 py-2 border border-[#333333] rounded-lg focus:ring-blue-500 focus:border-blue-500 text-sm"
               placeholder="Search users by name or email..."
             />
           </div>
@@ -27,8 +27,8 @@ export default function UserManagement() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 border-b border-gray-100">
+          <table className="w-full text-sm text-left text-[#a1a1aa]">
+            <thead className="text-xs text-gray-300 uppercase bg-[#0a0a0a] border-b border-[#1f1f1f]">
               <tr>
                 <th scope="col" className="px-6 py-4">Name</th>
                 <th scope="col" className="px-6 py-4">Role</th>
@@ -39,41 +39,40 @@ export default function UserManagement() {
             </thead>
             <tbody>
               {mockUsers.map(u => (
-                <tr key={u.id} className="bg-white border-b border-gray-50 hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">
+                <tr key={u.id} className="bg-[#111111] border-b border-gray-50 hover:bg-[#0a0a0a]">
+                  <td className="px-6 py-4 font-medium text-white whitespace-nowrap">
                     {u.companyName ? `${u.name} (${u.companyName})` : u.name}
                   </td>
                   <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold uppercase ${
-                      u.role === 'admin' ? 'bg-purple-50 text-purple-700 border border-purple-200' :
-                      u.role === 'company' ? 'bg-blue-50 text-blue-700 border border-blue-200' :
-                      'bg-green-50 text-green-700 border border-green-200'
-                    }`}>
+                    <span className={`px-2.5 py-1 rounded-full text-xs font-semibold uppercase ${u.role === 'admin' ? 'bg-purple-900/30 text-purple-700 border border-purple-200' :
+                        u.role === 'company' ? 'bg-blue-900/30 text-blue-700 border border-blue-900/50' :
+                          'bg-green-900/30 text-green-700 border border-green-900/50'
+                      }`}>
                       {u.role}
                     </span>
                   </td>
                   <td className="px-6 py-4">{u.email}</td>
                   <td className="px-6 py-4">
                     <span className="flex items-center text-green-600">
-                      <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                      <div className="w-2 h-2 rounded-full bg-green-900/300 mr-2"></div>
                       Active
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right flex justify-end gap-2">
-                     <button className="text-gray-400 hover:text-blue-600 transition-colors p-1">
+                    <button className="text-gray-400 hover:text-blue-600 transition-colors p-1">
                       <Edit2 className="w-4 h-4" />
-                     </button>
-                     <button className="text-gray-400 hover:text-red-600 transition-colors p-1">
+                    </button>
+                    <button className="text-gray-400 hover:text-red-600 transition-colors p-1">
                       <Trash2 className="w-4 h-4" />
-                     </button>
+                    </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        
-        <div className="p-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-500">
+
+        <div className="p-4 border-t border-[#1f1f1f] flex justify-between items-center text-sm text-[#a1a1aa]">
           <span>Showing 1 to {mockUsers.length} of {mockUsers.length} entries</span>
           <div className="flex gap-1">
             <Button variant="outline" size="sm" disabled>Previous</Button>

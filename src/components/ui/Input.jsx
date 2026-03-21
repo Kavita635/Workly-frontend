@@ -1,30 +1,25 @@
 import React from 'react';
 
-const Input = React.forwardRef(({ label, error, className = '', id, ...props }, ref) => {
-  const inputId = id || label?.toLowerCase().replace(/\s+/g, '-');
-  
+const Input = React.forwardRef(({ label, error, className = '', ...props }, ref) => {
   return (
-    <div className={`flex flex-col gap-1.5 ${className}`}>
+    <div className="flex flex-col gap-1.5 w-full">
       {label && (
-        <label htmlFor={inputId} className="text-sm font-medium text-gray-700">
+        <label className="text-sm font-medium text-[#a1a1aa] ml-1">
           {label}
         </label>
       )}
       <input
-        id={inputId}
-        ref={ref}
-        className={`px-3 py-2 bg-white border rounded-lg text-sm shadow-sm placeholder-gray-400
-          focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500
-          disabled:bg-gray-50 disabled:text-gray-500 disabled:border-gray-200 disabled:shadow-none
-          ${error ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : 'border-gray-300'}
-        `}
+        className={`w-full px-4 py-3 bg-[#0a0a0a] border border-[#1f1f1f] text-white rounded-xl focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all outline-none placeholder-[#475569] shadow-inner ${
+          error ? 'border-red-900 focus:ring-red-500 focus:border-red-500' : ''
+        } ${className}`}
         {...props}
       />
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && (
+        <span className="text-xs text-red-500 ml-1 mt-1">{error}</span>
+      )}
     </div>
   );
 });
 
 Input.displayName = 'Input';
-
 export default Input;

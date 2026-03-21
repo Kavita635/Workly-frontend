@@ -1,19 +1,26 @@
 import React from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import Sidebar from '../../components/common/Sidebar';
 import { useAuth } from '../../context/AuthContext';
+import { AnimatePresence } from 'framer-motion';
+import PageTransition from '../../components/layout/PageTransition';
 
 const CompanyDashboard = () => {
   const { user, loading } = useAuth();
-  
+  const location = useLocation();
+
   if (loading) return <div className="p-8">Loading...</div>;
   if (!user || user.role !== 'company') return <Navigate to="/login" replace />;
 
   return (
-    <div className="flex bg-gray-50 min-h-screen">
+    <div className="flex bg-[#000000] min-h-screen">
       <Sidebar />
-      <div className="flex-1 overflow-auto p-8">
-        <Outlet />
+      <div className="flex-1 overflow-auto p-8 relative">
+        <AnimatePresence mode="wait">
+          <PageTransition key={location.pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
       </div>
     </div>
   );

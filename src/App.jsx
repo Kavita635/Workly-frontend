@@ -1,5 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Outlet, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
+import { ToastProvider } from './context/ToastContext';
+import PageTransition from './components/layout/PageTransition';
 
 // Layout
 import Navbar from './components/common/Navbar';
@@ -14,10 +17,19 @@ import InternshipDetail from './pages/public/InternshipDetail';
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 
+// Info Pages
+import About from './pages/public/About';
+import HelpCenter from './pages/public/HelpCenter';
+import Blog from './pages/public/Blog';
+import CareerGuide from './pages/public/CareerGuide';
+import PrivacyPolicy from './pages/public/PrivacyPolicy';
+import TermsOfService from './pages/public/TermsOfService';
+
 // Student Pages
 import StudentDashboard from './pages/student/StudentDashboard';
 import Profile from './pages/student/Profile';
 import Applications from './pages/student/Applications';
+import SavedInternships from './pages/student/SavedInternships';
 
 // Company Pages
 import CompanyDashboard from './pages/company/CompanyDashboard';
@@ -30,50 +42,65 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import Analytics from './pages/admin/Analytics';
 
-const PublicLayout = () => (
-  <div className="flex flex-col min-h-screen">
-    <Navbar />
-    <main className="flex-grow">
-      <Outlet />
-    </main>
-    <Footer />
-  </div>
-);
+const PublicLayout = () => {
+  const location = useLocation();
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-grow">
+        <AnimatePresence mode="wait">
+          <PageTransition key={location.pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes with Navbar and Footer */}
-        <Route element={<PublicLayout />}>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/internships" element={<Marketplace />} />
-          <Route path="/internships/:id" element={<InternshipDetail />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-        </Route>
+    <ToastProvider>
+      <Router>
+        <Routes>
+          {/* Public Routes with Navbar and Footer */}
+          <Route element={<PublicLayout />}>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/internships" element={<Marketplace />} />
+            <Route path="/internships/:id" element={<InternshipDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/help-center" element={<HelpCenter />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/career-guide" element={<CareerGuide />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<TermsOfService />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+          </Route>
 
-        {/* Dashboard Routes (Protected, no public Navbar/Footer) */}
-        <Route path="/student" element={<StudentDashboard />}>
-          <Route index element={<div>Student Home Overview</div>} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="applications" element={<Applications />} />
-        </Route>
+          <Route path="/student" element={<StudentDashboard />}>
+            <Route index element={<div>Student Home Overview</div>} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="applications" element={<Applications />} />
+            <Route path="saved" element={<SavedInternships />} />
+          </Route>
 
-        <Route path="/company" element={<CompanyDashboard />}>
-          <Route index element={<div>Company Home Overview</div>} />
-          <Route path="post-internship" element={<PostInternship />} />
-          <Route path="manage" element={<ManageInternships />} />
-          <Route path="candidates" element={<ViewApplications />} />
-        </Route>
+          <Route path="/company" element={<CompanyDashboard />}>
+            <Route index element={<div>Company Home Overview</div>} />
+            <Route path="post-internship" element={<PostInternship />} />
+            <Route path="manage" element={<ManageInternships />} />
+            <Route path="candidates" element={<ViewApplications />} />
+          </Route>
 
-        <Route path="/admin" element={<AdminDashboard />}>
-          <Route index element={<Analytics />} />
-          <Route path="users" element={<UserManagement />} />
-          <Route path="moderation" element={<div>Moderation Page</div>} />
-        </Route>
-      </Routes>
-    </Router>
+          <Route path="/admin" element={<AdminDashboard />}>
+            <Route index element={<Analytics />} />
+            <Route path="users" element={<UserManagement />} />
+            <Route path="moderation" element={<div>Moderation Page</div>} />
+          </Route>
+        </Routes>
+      </Router>
+    </ToastProvider>
   );
 }
 

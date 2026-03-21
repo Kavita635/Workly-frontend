@@ -1,108 +1,142 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Building, UserCheck } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useInternships } from '../../context/InternshipContext';
 import InternshipCard from '../../components/internship/InternshipCard';
+import Button from '../../components/ui/Button';
 
 const LandingPage = () => {
   const { internships, loading } = useInternships();
-
   const featuredInternships = internships.slice(0, 3);
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.3 }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 40, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 1, ease: [0.16, 1, 0.3, 1] } }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-black overflow-hidden px-4 md:px-0">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 py-24 sm:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-sm font-medium mb-8">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-            </span>
-            New opportunities added daily
-          </div>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-8">
-            Kickstart your career <br className="hidden md:block" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">with top companies</span>
-          </h1>
-          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto leading-relaxed">
-            Discover tailored internships, build your professional network, and take the first step towards your dream job.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/internships" className="px-8 py-4 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 transition shadow-xl shadow-blue-600/20 text-lg flex items-center justify-center gap-2">
-              <Search className="w-5 h-5" />
-              Find Internships
-            </Link>
-            <Link to="/signup" className="px-8 py-4 bg-white text-gray-900 font-medium rounded-xl border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition shadow-sm text-lg">
-              For Companies
-            </Link>
-          </div>
-        </div>
+      <section className="relative min-h-[100vh] flex flex-col justify-center items-center text-center pt-24 overflow-hidden">
         
-        {/* Background Decorative Elements */}
-        <div className="absolute top-0 left-1/2 -ml-[39rem] -mt-[12rem] w-[78rem] h-[50rem] opacity-20 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-400 via-transparent to-transparent -z-10 blur-3xl"></div>
+        {/* Subtle background glow element */}
+        <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[40vw] max-w-[1000px] max-h-[600px] bg-gradient-to-r from-blue-600/10 to-purple-600/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col items-center">
+          <motion.div 
+            initial="hidden" 
+            animate="visible" 
+            variants={containerVariants}
+            className="flex flex-col items-center"
+          >
+            <motion.h1 variants={itemVariants} className="text-6xl md:text-8xl lg:text-[140px] font-black tracking-tighter leading-none mb-6 bg-gradient-to-r from-blue-500 to-purple-500 bg-clip-text text-transparent pb-2 pr-4 drop-shadow-[0_0_25px_rgba(37,99,235,0.3)]">
+              Workly.
+            </motion.h1>
+            <motion.h2 variants={itemVariants} className="text-3xl md:text-5xl lg:text-7xl font-bold text-[#a1a1aa] tracking-tight mb-10 max-w-4xl leading-tight">
+              The future of <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">internships</span> is here.
+            </motion.h2>
+            
+            <motion.div variants={itemVariants} className="flex justify-center w-full max-w-md">
+              <Link to="/internships" className="w-full">
+                <Button size="lg" className="w-full h-16 text-lg rounded-full border border-white/20">
+                  Start Exploring
+                </Button>
+              </Link>
+            </motion.div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 100, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 1.5, delay: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full max-w-5xl mt-14 relative"
+          >
+           <div className="aspect-[21/9] rounded-t-3xl border-t border-l border-r border-[#1f1f1f] bg-gradient-to-b from-[#111111] to-black overflow-hidden relative shadow-[0_-20px_80px_-20px_rgba(37,99,235,0.2)]">
+             {/* Fake UI mockup to look like a premium app */}
+             <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=2000')] opacity-40 bg-cover bg-center mix-blend-luminosity"></div>
+             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
+           </div>
+          </motion.div>
+        </div>
       </section>
 
-      {/* Stats/Logo Cloud could go here */}
-
       {/* Featured Internships */}
-      <section className="py-24 bg-gray-50" id="featured">
+      <section className="py-32 bg-gradient-to-b from-[#0a0a0a] to-[#111111] relative z-20 border-t border-[#1f1f1f]" id="featured">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Featured Opportunities</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">Explore hand-picked internships from our top partner companies.</p>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true, margin: "-100px" }} 
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center mb-20"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">Premium Opportunities</h2>
+            <p className="text-xl text-[#a1a1aa] max-w-2xl mx-auto">Explore hand-picked roles from world-class teams.</p>
+          </motion.div>
           
           {loading ? (
-            <div className="flex justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="flex justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredInternships.map(internship => (
-                <InternshipCard key={internship.id} internship={internship} />
+              {featuredInternships.map((internship, index) => (
+                <InternshipCard key={internship.id} internship={internship} index={index} />
               ))}
             </div>
           )}
           
-          <div className="mt-12 text-center">
-            <Link to="/internships" className="text-blue-600 font-semibold hover:text-blue-700 text-lg flex items-center justify-center gap-2">
-              View all opportunities <span aria-hidden="true">&rarr;</span>
+          <div className="mt-20 text-center">
+            <Link to="/internships">
+               <Button variant="outline" size="lg" className="rounded-full px-8 py-4">
+                 View all opportunities <span aria-hidden="true" className="ml-2">&rarr;</span>
+               </Button>
             </Link>
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="py-24 bg-white" id="how-it-works">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 border-t border-gray-100 pt-24">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">How it works</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">A seamless experience for both students and companies.</p>
-          </div>
+      <section className="py-40 bg-black border-t border-[#1f1f1f]" id="how-it-works">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }} 
+            whileInView={{ opacity: 1, y: 0 }} 
+            viewport={{ once: true }} 
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center mb-24"
+          >
+            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">Effortless Process</h2>
+            <p className="text-xl text-[#a1a1aa] max-w-2xl mx-auto">A seamless experience designed for ambition.</p>
+          </motion.div>
           
-          <div className="grid md:grid-cols-3 gap-12 text-center">
-            <div className="p-6">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <UserCheck className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">1. Create Profile</h3>
-              <p className="text-gray-600">Build a standout profile highlighting your skills, education, and portfolio.</p>
-            </div>
-            <div className="p-6">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Search className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">2. Search & Apply</h3>
-              <p className="text-gray-600">Filter through hundreds of active listings and apply with just one click.</p>
-            </div>
-            <div className="p-6">
-              <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <Building className="w-8 h-8" />
-              </div>
-              <h3 className="text-xl font-bold mb-3">3. Get Hired</h3>
-              <p className="text-gray-600">Connect with recruiters directly and land your dream internship.</p>
-            </div>
+          <div className="grid md:grid-cols-3 gap-8 text-center">
+            {[
+              { id: "01", title: "Create Profile", desc: "Build a standout profile highlighting your skills and portfolio." },
+              { id: "02", title: "Apply Instantly", desc: "Filter through elite listings and apply with a single click." },
+              { id: "03", title: "Get Hired", desc: "Connect with recruiters directly and land your dream role." }
+            ].map((step, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8, delay: idx * 0.2, ease: [0.16, 1, 0.3, 1] }}
+                className="p-10 rounded-3xl bg-[#0a0a0a] border border-[#1f1f1f] hover:border-[#333333] transition-colors duration-500 group"
+              >
+                <div className="text-5xl font-black text-[#1f1f1f] group-hover:text-white transition-colors duration-500 mb-8">{step.id}</div>
+                <h3 className="text-2xl font-bold mb-4 text-white tracking-tight">{step.title}</h3>
+                <p className="text-[#a1a1aa] leading-relaxed text-lg">{step.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>

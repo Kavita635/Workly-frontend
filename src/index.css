@@ -1,14 +1,49 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary-50: #eff6ff;
-  --color-primary-100: #dbeafe;
-  --color-primary-500: #3b82f6;
-  --color-primary-600: #2563eb;
-  --color-primary-700: #1d4ed8;
+  --color-dark-bg: #000000;
+  --color-dark-sec: #0a0a0a;
+  --color-dark-card: #111111;
+  --color-dark-border: #1f1f1f;
+  --color-text-pri: #ffffff;
+  --color-text-sec: #a1a1aa;
+  
+  --color-accent-blue: #2563eb;
+  --color-accent-orange: #ff6a00;
+  --color-accent-purple: #7c3aed;
 }
 
 body {
-  background-color: #f8fafc;
-  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--color-dark-bg);
+  color: var(--color-text-pri);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer utilities {
+  .glass-nav-dark {
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border-bottom: 1px solid var(--color-dark-border);
+  }
+  .accent-glow {
+    box-shadow: 0 0 80px -20px var(--color-accent-blue), 0 0 100px -20px var(--color-accent-purple);
+  }
+  .hover-glow:hover {
+    box-shadow: 0 0 40px -10px rgba(255, 106, 0, 0.4);
+    border-color: rgba(255, 106, 0, 0.5);
+  }
+  .text-glow {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+  }
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-purple));
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, var(--color-accent-blue), var(--color-accent-purple));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }

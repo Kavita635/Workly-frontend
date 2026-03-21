@@ -10,6 +10,10 @@ export const InternshipProvider = ({ children }) => {
   const { user } = useAuth();
   const [internships, setInternships] = useState([]);
   const [applications, setApplications] = useState([]);
+  const [savedInternships, setSavedInternships] = useState(() => {
+    const saved = localStorage.getItem('workly_bookmarks');
+    return saved ? JSON.parse(saved) : [];
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -51,7 +55,7 @@ export const InternshipProvider = ({ children }) => {
 
   const applyForInternship = async (internshipId, coverLetter) => {
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     if (applications.some(a => a.internshipId === internshipId && a.studentId === user.id)) {
       throw new Error('Already applied for this internship');
     }
@@ -64,7 +68,7 @@ export const InternshipProvider = ({ children }) => {
       appliedAt: new Date().toISOString().split('T')[0],
       coverLetter
     };
-    
+
     setApplications([...applications, newApp]);
   };
 
@@ -78,15 +82,23 @@ export const InternshipProvider = ({ children }) => {
       status: 'active',
       ...internshipData
     };
-    
+
     setInternships([newInternship, ...internships]);
   };
 
   const updateApplicationStatus = async (applicationId, status) => {
     await new Promise(resolve => setTimeout(resolve, 500));
-    setApplications(applications.map(app => 
+    setApplications(applications.map(app =>
       app.id === applicationId ? { ...app, status } : app
     ));
+  };
+
+  const toggleBookmark = (id) => {
+    setSavedInternships(prev => {
+      const updated = prev.includes(id) ? prev.filter(bId => bId !== id) : [...prev, id];
+      localStorage.setItem('workly_bookmarks', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   return (
@@ -100,7 +112,9 @@ export const InternshipProvider = ({ children }) => {
       getCompanyApplications,
       applyForInternship,
       postInternship,
-      updateApplicationStatus
+      updateApplicationStatus,
+      savedInternships,
+      toggleBookmark
     }}>
       {children}
     </InternshipContext.Provider>

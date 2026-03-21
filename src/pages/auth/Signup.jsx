@@ -1,22 +1,28 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { UserPlus, User, Building } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useToast } from '../../context/ToastContext';
 import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
-import { Briefcase } from 'lucide-react';
 
 export default function Signup() {
+  const [role, setRole] = useState('student'); // 'student' or 'company'
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
-    role: 'student',
     companyName: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { signup } = useAuth();
+  const { addToast } = useToast();
   const navigate = useNavigate();
+
+  const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
+  const isFormValid = formData.name.trim() && isEmailValid && formData.password.length >= 6 && (role === 'student' || formData.companyName.trim());
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -26,111 +32,151 @@ export default function Signup() {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
-      const user = await signup(formData);
-      navigate(`/${user.role}`);
+      // Validate company name if applicable
+      if (role === 'company' && !formData.companyName.trim()) {
+        throw new Error('Company name is required for company accounts.');
+      }
+
+      await signup({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+        role: role,
+        companyName: role === 'company' ? formData.companyName : undefined
+      });
+      addToast('Account created successfully!', 'success');
+      // Route based on newly created role
+      navigate(`/${role}`);
     } catch (err) {
-      setError(err.message || 'Failed to signup');
+      setError(err.message || 'Failed to create account');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-[calc(100vh-160px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mt-8 mb-8">
-        <div className="text-center mb-8">
-          <div className="inline-flex bg-blue-600 p-2 rounded-xl mb-4">
-            <Briefcase className="w-8 h-8 text-white" />
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Create an account</h2>
-          <p className="text-gray-500 text-sm">Join InternConnect to find or post opportunities.</p>
-        </div>
+    <div className="min-h-screen bg-black flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative overflow-hidden">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40vw] h-[40vw] max-w-[600px] max-h-[600px] bg-purple-600/10 rounded-full blur-[100px] pointer-events-none" />
 
-        {error && (
-          <div className="bg-red-50 text-red-700 text-sm p-3 rounded-lg border border-red-100 mb-6 text-center">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="flex justify-center gap-4 mb-6">
-            <label className={`flex-1 py-3 px-4 rounded-xl border-2 cursor-pointer text-center text-sm font-medium transition-colors ${formData.role === 'student' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-              <input 
-                type="radio" 
-                name="role" 
-                value="student" 
-                className="hidden" 
-                checked={formData.role === 'student'} 
-                onChange={handleChange} 
-              />
-              Student
-            </label>
-            <label className={`flex-1 py-3 px-4 rounded-xl border-2 cursor-pointer text-center text-sm font-medium transition-colors ${formData.role === 'company' ? 'border-blue-600 bg-blue-50 text-blue-700' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
-              <input 
-                type="radio" 
-                name="role" 
-                value="company" 
-                className="hidden" 
-                checked={formData.role === 'company'} 
-                onChange={handleChange} 
-              />
-              Company
-            </label>
-          </div>
-
-          <Input
-            label="Full Name"
-            name="name"
-            required
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="John Doe"
-          />
-
-          {formData.role === 'company' && (
-             <Input
-               label="Company Name"
-               name="companyName"
-               required
-               value={formData.companyName}
-               onChange={handleChange}
-               placeholder="TechCorp Innovations"
-             />
-          )}
-
-          <Input
-            label="Email Address"
-            type="email"
-            name="email"
-            required
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="you@example.com"
-          />
-          
-          <Input
-            label="Password"
-            type="password"
-            name="password"
-            required
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Create a strong password"
-          />
-
-          <Button type="submit" className="w-full py-2.5 mt-2" disabled={loading}>
-            {loading ? 'Creating account...' : 'Create account'}
-          </Button>
-        </form>
-
-        <p className="mt-8 text-center text-sm text-gray-600">
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="sm:mx-auto sm:w-full sm:max-w-md relative z-10 text-center"
+      >
+        <h2 className="text-4xl font-bold text-white tracking-tight mb-2">Create an account</h2>
+        <p className="text-[#a1a1aa] text-lg">
           Already have an account?{' '}
-          <Link to="/login" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to="/login" className="font-semibold text-white hover:text-blue-400 transition-colors">
             Log in
           </Link>
         </p>
-      </div>
+      </motion.div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10"
+      >
+        <div className="bg-[#111111] py-10 px-4 shadow-2xl border border-[#1f1f1f] sm:rounded-3xl sm:px-10">
+          
+          {/* Role Toggle */}
+          <div className="flex p-1 bg-[#0a0a0a] rounded-xl mb-8 border border-[#1f1f1f]">
+            <button
+              type="button"
+              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg flex items-center justify-center transition-all ${
+                role === 'student' ? 'bg-[#1f1f1f] text-white shadow-sm' : 'text-[#a1a1aa] hover:text-white'
+              }`}
+              onClick={() => setRole('student')}
+            >
+              <User className="w-4 h-4 mr-2" />
+              Student
+            </button>
+            <button
+              type="button"
+              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg flex items-center justify-center transition-all ${
+                role === 'company' ? 'bg-[#1f1f1f] text-white shadow-sm' : 'text-[#a1a1aa] hover:text-white'
+              }`}
+              onClick={() => setRole('company')}
+            >
+              <Building className="w-4 h-4 mr-2" />
+              Company
+            </button>
+          </div>
+
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            {error && (
+              <div className="bg-red-900/20 border border-red-900/50 rounded-xl p-4">
+                <p className="text-sm text-red-500">{error}</p>
+              </div>
+            )}
+            
+            <Input
+              label="Full Name"
+              type="text"
+              name="name"
+              required
+              placeholder="John Doe"
+              value={formData.name}
+              onChange={handleChange}
+            />
+
+            <Input
+              label="Email address"
+              type="email"
+              name="email"
+              autoComplete="email"
+              required
+              placeholder="you@example.com"
+              value={formData.email}
+              onChange={handleChange}
+            />
+
+            {role === 'company' && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
+                <Input
+                  label="Company Name"
+                  type="text"
+                  name="companyName"
+                  required
+                  placeholder="Acme Corp"
+                  value={formData.companyName}
+                  onChange={handleChange}
+                />
+              </motion.div>
+            )}
+
+            <Input
+              label="Password"
+              type="password"
+              name="password"
+              autoComplete="new-password"
+              required
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={handleChange}
+            />
+
+            <div>
+              <Button type="submit" className="w-full py-3.5 text-base shadow-[0_0_30px_-10px_rgba(255,255,255,0.2)] disabled:opacity-50 disabled:cursor-not-allowed" disabled={loading || !isFormValid}>
+                {loading ? 'Creating account...' : (
+                  <>
+                    <UserPlus className="w-5 h-5 mr-2" />
+                    Sign up
+                  </>
+                )}
+              </Button>
+            </div>
+            
+            <p className="text-xs text-[#a1a1aa] text-center mt-4">
+              By creating an account, you agree to our Terms of Service and Privacy Policy.
+            </p>
+          </form>
+
+        </div>
+      </motion.div>
     </div>
   );
 }

@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 800));
-    
+
     const foundUser = mockUsers.find(u => u.email === email && u.password === password);
     if (!foundUser) {
       throw new Error('Invalid email or password');
@@ -39,13 +39,13 @@ export const AuthProvider = ({ children }) => {
     if (mockUsers.some(u => u.email === userData.email)) {
       throw new Error('Email already registered');
     }
-    
+
     // In a real app we'd save it to DB, but for mock just log them in
     const newUser = {
       id: Math.random().toString(36).substr(2, 9),
       ...userData
     };
-    
+
     const { password: _, ...userWithoutPassword } = newUser;
     setUser(userWithoutPassword);
     localStorage.setItem('user', JSON.stringify(userWithoutPassword));
