@@ -85,12 +85,24 @@ export default function Profile() {
           </p>
         </div>
         {!isEditing && (
-          <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+            <Button
+              onClick={() => setIsEditing(true)}
+              className="bg-gradient-to-r from-orange-500 to-pink-500 text-white shadow-lg hover:scale-105 transition-transform duration-200"
+            >
+              Edit Profile
+            </Button>
+          </motion.div>
         )}
       </div>
 
       {/* Main Card */}
-      <div className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] overflow-hidden">
+      <motion.div
+        className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] overflow-hidden"
+        initial={false}
+        animate={isEditing ? { boxShadow: '0 0 0 4px #fb923c44', scale: 1.01 } : { boxShadow: 'none', scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
         <div className="p-6 md:p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
@@ -168,11 +180,12 @@ export default function Profile() {
 
                 {resumeFile ? (
                   <motion.div
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, x: -10, scale: 0.8 }}
+                    animate={{ opacity: 1, x: 0, scale: [1.1, 0.95, 1] }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                     className="flex items-center text-sm text-green-400 font-medium"
                   >
-                    <CheckCircle className="w-4 h-4 mr-1" />
+                    <CheckCircle className="w-4 h-4 mr-1 animate-bounce" />
                     {resumeFile.name}
                   </motion.div>
                 ) : (
@@ -186,10 +199,17 @@ export default function Profile() {
 
           {/* Buttons */}
           {isEditing && (
-            <div className="flex justify-end gap-3 pt-6 border-t border-[#1f1f1f]">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex justify-end gap-3 pt-6 border-t border-[#1f1f1f]"
+            >
               <Button
                 variant="ghost"
-                onClick={() => setIsEditing(false)}
+                onClick={() => {
+                  setIsEditing(false);
+                  addToast('Edit canceled', 'info');
+                }}
                 disabled={loading}
               >
                 Cancel
@@ -198,10 +218,10 @@ export default function Profile() {
               <Button onClick={handleSave} disabled={loading}>
                 {loading ? 'Saving...' : 'Save Changes'}
               </Button>
-            </div>
+            </motion.div>
           )}
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
