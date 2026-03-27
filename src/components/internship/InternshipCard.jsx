@@ -3,11 +3,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { MapPin, Building, Clock, DollarSign, Bookmark } from 'lucide-react';
 import { useInternships } from '../../context/InternshipContext';
+import { useBookmarks } from '../../context/BookmarkContext';
 import { useAuth } from '../../context/AuthContext';
 import { useToast } from '../../context/ToastContext';
 
 const InternshipCard = ({ internship, showApply = false, index = 0 }) => {
-  const { savedInternships, toggleBookmark } = useInternships();
+  const { savedInternships, toggleBookmark } = useBookmarks();
   const { addToast } = useToast();
   const { user } = useAuth();
 
@@ -35,7 +36,12 @@ const InternshipCard = ({ internship, showApply = false, index = 0 }) => {
 
       <div className="flex justify-between items-start mb-6 relative z-10 pt-4">
         <div>
-          <h3 className="text-2xl font-bold text-white tracking-tight mb-2 group-hover:text-[#ff6a00] transition-colors pr-10">{internship.title}</h3>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="text-2xl font-bold text-white tracking-tight group-hover:text-[#ff6a00] transition-colors pr-2">{internship.title}</h3>
+            {internship.recommended && (
+              <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-green-700 text-white border border-green-500 animate-pulse">Recommended</span>
+            )}
+          </div>
           <div className="flex items-center text-sm text-[#a1a1aa]">
             <Building className="w-4 h-4 mr-2" />
             <span className="font-medium">{internship.company}</span>

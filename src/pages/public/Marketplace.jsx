@@ -1,140 +1,174 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInternships } from '../../context/InternshipContext';
+import { useAuth } from '../../context/AuthContext';
 import InternshipCard from '../../components/internship/InternshipCard';
 import { InternshipCardSkeleton } from '../../components/ui/Skeleton';
-import { Search, Filter } from 'lucide-react';
+import { Search } from 'lucide-react';
 
 export default function Marketplace() {
   const { internships, loading } = useInternships();
+  
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState('All');
-  const [roleFilter, setRoleFilter] = useState('All');
-  const [locationFilter, setLocationFilter] = useState('');
+  const [mode, setMode] = useState([]);
+  const [domains, setDomains] = useState([]);
+  const [stipend, setStipend] = useState([0, 20000]);
+
+  const parseStipend = (stipendStr) => {
+    if (!stipendStr) return 0;
+    const match = stipendStr.match(/\d+/g);
+    return match ? parseInt(match.join(''), 10) : 0;
+  };
 
   const filteredInternships = internships.filter(intern => {
-    const matchesSearch = intern.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    const matchesSearch =
+      intern.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       intern.company.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === 'All' || intern.type === typeFilter;
-    const matchesRole = roleFilter === 'All' || intern.title.toLowerCase().includes(roleFilter.toLowerCase());
-    const matchesLocation = intern.location.toLowerCase().includes(locationFilter.toLowerCase());
 
-    return matchesSearch && matchesType && matchesRole && matchesLocation;
+    const matchesMode = mode.length === 0 || mode.some(m => intern.location?.toLowerCase().includes(m.toLowerCase()) || intern.type?.toLowerCase().includes(m.toLowerCase()));
+    
+    const matchesDomain = domains.length === 0 || domains.some(domain => {
+      const text = `${intern.title} ${intern.description}`.toLowerCase();
+      if (domain === 'AI') return /ai|machine learning|deep learning|artificial intelligence/i.test(text);
+      if (domain === 'Web Dev') return /web|frontend|backend|fullstack|react|node|javascript|html|css/i.test(text);
+      if (domain === 'Data Science') return /data science|data analysis|python|statistics|analytics/i.test(text);
+      return false;
+    });
+
+    const stipendNum = parseStipend(intern.stipend);
+    const matchesStipend = stipendNum >= stipend[0] && stipendNum <= stipend[1];
+
+    return matchesSearch && matchesMode && matchesDomain && matchesStipend;
   });
 
   return (
     <div className="bg-[#000000] min-h-screen py-32">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          className="mb-16 text-center"
-        >
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 tracking-tight">Explore Roles</h1>
-          <p className="text-xl text-[#a1a1aa] max-w-2xl mx-auto">Discover opportunities that shape the future.</p>
-        </motion.div>
-
-        {/* Filters and Search */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="p-3 rounded-2xl bg-[#111111] border border-[#1f1f1f] flex flex-col lg:flex-row gap-3 mb-16 max-w-6xl mx-auto shadow-lg"
-        >
-          <div className="flex-1 relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-[#a1a1aa]" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row gap-8">
+        
+        <aside className="w-full lg:w-72 mb-8 lg:mb-0">
+          <div className="sticky top-28 p-6 rounded-2xl bg-[#111111] border border-[#1f1f1f] shadow-xl flex flex-col gap-6">
+            <div>
+              <label className="block text-white font-semibold mb-3 tracking-wide text-sm">SEARCH</label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2"><Search className="h-5 w-5 text-[#a1a1aa]" /></span>
+                <input
+                  type="text"
+                  className="block w-full pl-10 pr-4 py-2.5 bg-[#0a0a0a] border border-[#1f1f1f] text-white rounded-xl focus:ring-2 focus:ring-purple-500/50 outline-none transition-all placeholder-[#475569]"
+                  placeholder="Job title, company..."
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
-            <input
-              type="text"
-              className="block w-full pl-12 pr-4 py-4 bg-[#0a0a0a] border border-[#1f1f1f] text-white rounded-xl focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
-              placeholder="Search by job title, company..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
 
-          <div className="flex-1 relative">
-            <input
-              type="text"
-              className="block w-full px-4 py-4 bg-[#0a0a0a] border border-[#1f1f1f] text-white rounded-xl focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none"
-              placeholder="Filter by Location (e.g., Remote, NY)"
-              value={locationFilter}
-              onChange={(e) => setLocationFilter(e.target.value)}
-            />
-          </div>
+            <div>
+              <label className="block text-white font-semibold mb-3 tracking-wide text-sm">MODE</label>
+              <div className="flex flex-wrap gap-2">
+                {['Remote', 'Part-time', 'Full-time'].map(opt => (
+                  <button
+                    key={opt}
+                    className={`px-4 py-1.5 rounded-full border text-xs font-medium transition-colors ${mode.includes(opt) ? 'bg-purple-600 text-white border-purple-600' : 'bg-[#191919] text-[#a1a1aa] border-[#333] hover:border-purple-500/50'}`}
+                    onClick={() => setMode(mode.includes(opt) ? mode.filter(m => m !== opt) : [...mode, opt])}
+                  >{opt}</button>
+                ))}
+              </div>
+            </div>
 
-          <div className="lg:w-48 flex items-center relative">
-            <select
-              className="block w-full px-4 py-4 bg-[#0a0a0a] border border-[#1f1f1f] text-white rounded-xl focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none appearance-none cursor-pointer"
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
+            <div>
+              <label className="block text-white font-semibold mb-3 tracking-wide text-sm">DOMAIN</label>
+              <div className="flex flex-wrap gap-2">
+                {['AI', 'Web Dev', 'Data Science'].map(opt => (
+                  <button
+                    key={opt}
+                    className={`px-4 py-1.5 rounded-full border text-xs font-medium transition-colors ${domains.includes(opt) ? 'bg-purple-600 text-white border-purple-600' : 'bg-[#191919] text-[#a1a1aa] border-[#333] hover:border-purple-500/50'}`}
+                    onClick={() => setDomains(domains.includes(opt) ? domains.filter(d => d !== opt) : [...domains, opt])}
+                  >{opt}</button>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-white font-semibold mb-3 tracking-wide text-sm">STIPEND (₹)</label>
+              <div className="flex items-center gap-3">
+                <input
+                  type="range"
+                  min={0}
+                  max={20000}
+                  step={500}
+                  value={stipend[0]}
+                  onChange={e => setStipend([Number(e.target.value), stipend[1]])}
+                  className="w-1/2 accent-purple-600"
+                />
+                <input
+                  type="range"
+                  min={0}
+                  max={20000}
+                  step={500}
+                  value={stipend[1]}
+                  onChange={e => setStipend([stipend[0], Number(e.target.value)])}
+                  className="w-1/2 accent-purple-600"
+                />
+              </div>
+              <div className="flex justify-between text-xs text-[#a1a1aa] mt-2 font-medium">
+                <span>₹{stipend[0]}</span>
+                <span>₹{stipend[1]}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={() => {
+                setSearchTerm('');
+                setMode([]);
+                setDomains([]);
+                setStipend([0, 20000]);
+              }}
+              className="w-full py-2.5 mt-4 bg-red-900/10 text-red-500 rounded-xl hover:bg-red-900/30 transition-colors font-medium text-sm border border-red-900/20"
             >
-              <option value="All">All Roles</option>
-              <option value="Frontend">Frontend</option>
-              <option value="Backend">Backend</option>
-              <option value="Design">Design</option>
-              <option value="Marketing">Marketing</option>
-            </select>
+              Clear Filters
+            </button>
           </div>
+        </aside>
 
-          <div className="lg:w-48 flex items-center relative">
-            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-              <Filter className="w-5 h-5 text-[#a1a1aa]" />
-            </div>
-            <select
-              className="block w-full pl-12 pr-4 py-4 bg-[#0a0a0a] border border-[#1f1f1f] text-white rounded-xl focus:ring-1 focus:ring-purple-500 focus:border-purple-500 transition-all outline-none appearance-none cursor-pointer"
-              value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
-            >
-              <option value="All">All Types</option>
-              <option value="Full-time">Full-time</option>
-              <option value="Part-time">Part-time</option>
-              <option value="Remote">Remote</option>
-            </select>
-          </div>
-
-          <button
-            onClick={() => {
-              setSearchTerm('');
-              setTypeFilter('All');
-              setRoleFilter('All');
-              setLocationFilter('');
-            }}
-            className="lg:w-32 flex items-center justify-center py-4 px-6 bg-red-900/10 text-red-500 rounded-xl hover:bg-red-900/30 transition-colors font-medium text-sm border border-red-900/20"
+        <div className="flex-1">
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-10 text-left"
           >
-            Reset
-          </button>
-        </motion.div>
-
-        {/* Results */}
-        {loading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3, 4, 5, 6].map(i => <InternshipCardSkeleton key={i} />)}
-          </div>
-        ) : filteredInternships.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredInternships.map((internship, index) => (
-              <InternshipCard
-                key={internship.id}
-                internship={internship}
-                index={index}
-              />
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-            className="text-center py-32"
-          >
-            <div className="w-24 h-24 bg-[#111111] rounded-full flex items-center justify-center mx-auto mb-8 border border-[#1f1f1f]">
-              <Search className="w-10 h-10 text-[#475569]" />
-            </div>
-            <h3 className="text-2xl font-bold text-white mb-4">No results found</h3>
-            <p className="text-[#a1a1aa] max-w-sm mx-auto">Try adjusting your search criteria to discover more opportunities.</p>
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">Explore Roles</h1>
+            <p className="text-lg text-[#a1a1aa]">Discover opportunities that shape the future.</p>
           </motion.div>
-        )}
+
+          {loading ? (
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              {[1, 2, 3, 4].map(i => <InternshipCardSkeleton key={i} />)}
+            </div>
+          ) : filteredInternships.length > 0 ? (
+            <motion.div layout className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+              <AnimatePresence>
+                {filteredInternships.map((internship, index) => (
+                  <InternshipCard
+                    key={internship.id}
+                    internship={internship}
+                    index={index}
+                  />
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }}
+              className="text-center py-20 bg-[#111111] rounded-2xl border border-[#1f1f1f]"
+            >
+              <div className="w-20 h-20 bg-[#1a1a1a] rounded-full flex items-center justify-center mx-auto mb-6 border border-[#333333]">
+                <Search className="w-8 h-8 text-[#475569]" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-3">No results found</h3>
+              <p className="text-[#a1a1aa] max-w-sm mx-auto">Try adjusting your filters or search terms.</p>
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );

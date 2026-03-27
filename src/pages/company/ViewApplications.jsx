@@ -10,17 +10,32 @@ export default function ViewApplications() {
 
   const applications = getCompanyApplications(user.id);
 
-  const StatusBadge = ({ status }) => {
-    const styles = {
-      pending: 'bg-yellow-900/30 text-yellow-700 border-yellow-900/50',
-      reviewed: 'bg-blue-900/30 text-blue-700 border-blue-900/50',
-      accepted: 'bg-green-900/30 text-green-700 border-green-900/50',
-      rejected: 'bg-red-900/30 text-red-700 border-red-900/50'
-    };
+  const Stepper = ({ currentStatus }) => {
+    const isRejected = currentStatus === 'rejected';
+    const steps = ['pending', 'reviewed', isRejected ? 'rejected' : 'accepted'];
+    const activeIndex = steps.indexOf(currentStatus) === -1 ? 0 : steps.indexOf(currentStatus);
+    
     return (
-      <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border capitalize ${styles[status]}`}>
-        {status}
-      </span>
+      <div className="w-full mt-6 pt-6 border-t border-[#1f1f1f]">
+        <div className="flex items-center justify-between relative px-2 sm:px-8">
+          <div className="absolute left-4 right-4 sm:left-10 sm:right-10 top-4 -translate-y-1/2 h-1 bg-[#1f1f1f] rounded-full z-0"></div>
+          <div className="absolute left-4 sm:left-10 top-4 -translate-y-1/2 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full z-0 transition-all duration-700 ease-in-out" style={{ width: `calc(${(activeIndex / (steps.length - 1)) * 100}% - ${activeIndex === 0 ? '0px' : '32px'})` }}></div>
+          
+          {steps.map((step, idx) => {
+            const isActive = idx <= activeIndex;
+            const isError = isRejected && idx === 2;
+            
+            return (
+              <div key={step} className="flex flex-col items-center relative z-10 gap-3">
+                 <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center transition-all duration-500 border-4 border-[#111111] ${isActive ? (isError ? 'bg-red-600' : 'bg-purple-600') : 'bg-[#2a2a2a]'}`}>
+                    {isActive ? (isError ? <XCircle className="w-4 h-4 text-white" /> : <CheckCircle className="w-4 h-4 text-white" />) : <div className="w-1.5 h-1.5 rounded-full bg-[#444444]"></div>}
+                 </div>
+                 <span className={`text-[10px] md:text-xs font-bold uppercase tracking-widest ${isActive ? (isError ? 'text-red-500' : 'text-purple-400') : 'text-[#475569]'}`}>{step}</span>
+              </div>
+            )
+          })}
+        </div>
+      </div>
     );
   };
 
@@ -42,13 +57,13 @@ export default function ViewApplications() {
       ) : (
         <div className="grid grid-cols-1 gap-6">
           {applications.map(app => (
-            <div key={app.id} className="bg-[#111111] rounded-xl shadow-none border border-[#1f1f1f] p-6 flex flex-col md:flex-row gap-6">
+            <div key={app.id} className="bg-[#111111] rounded-2xl shadow-xl border border-[#1f1f1f] p-8 flex flex-col transition-all hover:border-[#333333] hover:shadow-2xl gap-2">
 
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-1">
-                  <h3 className="text-lg font-bold text-white">Applicant ID: {app.studentId}</h3>
-                  <StatusBadge status={app.status} />
-                </div>
+              <div className="flex flex-col md:flex-row gap-6 justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-1">
+                    <h3 className="text-lg font-bold text-white">Applicant ID: {app.studentId}</h3>
+                  </div>
                 <div className="text-sm font-medium text-blue-600 mb-4">
                   Applied for: {app.internship?.title}
                 </div>
@@ -97,8 +112,9 @@ export default function ViewApplications() {
                     <XCircle className="w-4 h-4 mr-1.5" /> Reject
                   </Button>
                 </div>
+                </div>
               </div>
-
+              <Stepper currentStatus={app.status || 'pending'} />
             </div>
           ))}
         </div>

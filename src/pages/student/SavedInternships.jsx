@@ -2,11 +2,13 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { BookmarkMinus } from 'lucide-react';
 import { useInternships } from '../../context/InternshipContext';
+import { useBookmarks } from '../../context/BookmarkContext';
 import InternshipCard from '../../components/internship/InternshipCard';
 import { InternshipCardSkeleton } from '../../components/ui/Skeleton';
 
 export default function SavedInternships() {
-  const { internships, savedInternships, loading } = useInternships();
+  const { internships, loading } = useInternships();
+  const { savedInternships } = useBookmarks();
 
   const savedList = internships.filter(i => savedInternships.includes(i.id));
 

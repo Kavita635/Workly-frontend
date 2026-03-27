@@ -2,12 +2,20 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useInternships } from '../../context/InternshipContext';
+import { useAuth } from '../../context/AuthContext';
 import InternshipCard from '../../components/internship/InternshipCard';
 import Button from '../../components/ui/Button';
 
 const LandingPage = () => {
   const { internships, loading } = useInternships();
+  const { user } = useAuth();
+  
+  const recommendedInternships = user?.skills?.length > 0 
+    ? internships.filter(i => i.requirements?.some(r => user.skills.includes(r))).slice(0, 3)
+    : [];
+    
   const featuredInternships = internships.slice(0, 3);
+  const displayInternships = recommendedInternships.length > 0 ? recommendedInternships : featuredInternships;
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -78,8 +86,12 @@ const LandingPage = () => {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="text-center mb-20"
           >
-            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">Premium Opportunities</h2>
-            <p className="text-xl text-[#a1a1aa] max-w-2xl mx-auto">Explore hand-picked roles from world-class teams.</p>
+            <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-6">
+              {recommendedInternships.length > 0 ? 'Recommended for You' : 'Premium Opportunities'}
+            </h2>
+            <p className="text-xl text-[#a1a1aa] max-w-2xl mx-auto">
+              {recommendedInternships.length > 0 ? 'Tailored matches based on your unique skill set.' : 'Explore hand-picked roles from world-class teams.'}
+            </p>
           </motion.div>
           
           {loading ? (
@@ -88,8 +100,12 @@ const LandingPage = () => {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredInternships.map((internship, index) => (
-                <InternshipCard key={internship.id} internship={internship} index={index} />
+              {displayInternships.map((internship, index) => (
+                <InternshipCard 
+                  key={internship.id} 
+                  internship={{ ...internship, recommended: recommendedInternships.length > 0 }} 
+                  index={index} 
+                />
               ))}
             </div>
           )}

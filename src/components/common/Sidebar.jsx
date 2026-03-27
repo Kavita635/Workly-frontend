@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { 
   Briefcase, User, FileText, Settings, 
   PlusCircle, Users, Activity, LogOut,
-  LayoutDashboard, Bookmark
+  LayoutDashboard, Bookmark, MessageCircle
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -15,6 +15,7 @@ const Sidebar = () => {
     { name: 'My Profile', path: '/student/profile', icon: User },
     { name: 'Applications', path: '/student/applications', icon: FileText },
     { name: 'Saved Internships', path: '/student/saved', icon: Bookmark },
+    { name: 'Messages', path: '/chat', icon: MessageCircle },
   ];
 
   const companyLinks = [
@@ -22,12 +23,14 @@ const Sidebar = () => {
     { name: 'Post Internship', path: '/company/post', icon: PlusCircle },
     { name: 'Manage Postings', path: '/company/manage', icon: Briefcase },
     { name: 'View Applications', path: '/company/applications', icon: Users },
+    { name: 'Messages', path: '/chat', icon: MessageCircle },
   ];
 
   const adminLinks = [
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     { name: 'User Management', path: '/admin/users', icon: Users },
     { name: 'Analytics', path: '/admin/analytics', icon: Activity },
+    { name: 'Reports', path: '/admin/reports', icon: FileText },
   ];
 
   const links = user?.role === 'admin' ? adminLinks : 
