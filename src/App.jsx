@@ -12,10 +12,11 @@ import Footer from './components/common/Footer';
 // Public Pages
 import LandingPage from './pages/public/LandingPage';
 import Marketplace from './pages/public/Marketplace';
-import CVGenerator from './pages/CVGenerator';
-import TNPDashboard from './pages/TNPDashboard';
+import Blog from './pages/public/Blog';
+import CVBuilder from './pages/ai/CVBuilder';
 import AdminPanel from './pages/AdminPanel';
-import Chat from './pages/shared/Chat';
+import ChatPage from './pages/chat/ChatPage';
+import CareerRecommendations from './pages/ai/CareerRecommendations';
 import InternshipDetail from './pages/public/InternshipDetail';
 
 // Auth Pages
@@ -25,7 +26,6 @@ import Signup from './pages/auth/Signup';
 // Info Pages
 import About from './pages/public/About';
 import HelpCenter from './pages/public/HelpCenter';
-import Blog from './pages/public/Blog';
 import CareerGuide from './pages/public/CareerGuide';
 import PrivacyPolicy from './pages/public/PrivacyPolicy';
 import TermsOfService from './pages/public/TermsOfService';
@@ -35,6 +35,7 @@ import StudentDashboard from './pages/student/StudentDashboard';
 import Profile from './pages/student/Profile';
 import Applications from './pages/student/Applications';
 import SavedInternships from './pages/student/SavedInternships';
+import AnalyticsDashboard from './pages/student/AnalyticsDashboard';
 
 // Company Pages
 import CompanyDashboard from './pages/company/CompanyDashboard';
@@ -47,6 +48,7 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import UserManagement from './pages/admin/UserManagement';
 import Analytics from './pages/admin/Analytics';
 import Reports from './pages/admin/Reports';
+import TNPDashboard from './pages/admin/TNPDashboard';
 
 const PublicLayout = () => {
   const location = useLocation();
@@ -75,10 +77,12 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/internships" element={<Marketplace />} />
           <Route path="/internships/:id" element={<InternshipDetail />} />
-          <Route path="/cv-generator" element={<CVGenerator />} />
+          <Route path="/career-recommendations" element={<CareerRecommendations />} />
+          <Route path="/cv-generator" element={<CVBuilder />} />
           <Route path="/tnp-dashboard" element={<TNPDashboard />} />
           <Route path="/admin-panel" element={<AdminPanel />} />
-          <Route path="/chat" element={<Chat />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/career-recommendations" element={<CareerRecommendations />} />
           <Route path="/about" element={<About />} />
           <Route path="/help-center" element={<HelpCenter />} />
           <Route path="/blog" element={<Blog />} />
@@ -93,6 +97,7 @@ function App() {
           <Route index element={<div>Student Home Overview</div>} />
           <Route path="profile" element={<Profile />} />
           <Route path="applications" element={<Applications />} />
+          <Route path="analytics" element={<AnalyticsDashboard />} />
           <Route path="saved" element={<SavedInternships />} />
         </Route>
 

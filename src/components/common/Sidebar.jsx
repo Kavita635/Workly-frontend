@@ -3,8 +3,8 @@ import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { 
   Briefcase, User, FileText, Settings, 
-  PlusCircle, Users, Activity, LogOut,
-  LayoutDashboard, Bookmark, MessageCircle
+  PlusCircle, Users, LogOut, Activity,
+  LayoutDashboard, Bookmark, MessageCircle, Sparkles, PieChart
 } from 'lucide-react';
 
 const Sidebar = () => {
@@ -14,7 +14,9 @@ const Sidebar = () => {
     { name: 'Dashboard', path: '/student', icon: LayoutDashboard },
     { name: 'My Profile', path: '/student/profile', icon: User },
     { name: 'Applications', path: '/student/applications', icon: FileText },
+    { name: 'Analytics', path: '/student/analytics', icon: PieChart },
     { name: 'Saved Internships', path: '/student/saved', icon: Bookmark },
+    { name: 'AI Career Paths', path: '/career-recommendations', icon: Sparkles },
     { name: 'Messages', path: '/chat', icon: MessageCircle },
   ];
 

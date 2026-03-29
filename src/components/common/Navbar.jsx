@@ -34,14 +34,12 @@ const Navbar = () => {
               whileHover={{ scale: 1.05 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             />
-            <span className="text-xl font-bold text-white tracking-tight transition-all duration-300">
-              Workly
-            </span>
           </Link>
 
           <div className="hidden md:flex items-center gap-12">
             {[
               { name: 'Find Internships', path: '/internships' },
+              { name: 'Career Paths', path: '/career-recommendations' },
               { name: 'CV Generator', path: '/cv-generator' },
               { name: 'TNP Dashboard', path: '/tnp-dashboard' },
               { name: 'Admin Panel', path: '/admin-panel' },
@@ -73,7 +71,9 @@ const Navbar = () => {
               <div className="flex items-center gap-4">
                 <Link to="/chat" className="relative p-2 text-[#a1a1aa] hover:text-white transition-colors group/msg">
                   <MessageCircle className="w-5 h-5 group-hover/msg:scale-110 transition-transform" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.8)]" />
+                  <span className="absolute top-0 right-0 w-4 h-4 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.8)] flex items-center justify-center text-[10px] font-bold text-white tracking-tighter">
+                    2
+                  </span>
                 </Link>
                 <Link to={`/${user.role}`}>
                   <Button variant="ghost" size="sm" className="gap-2">
@@ -115,6 +115,7 @@ const Navbar = () => {
               className="md:hidden overflow-hidden bg-[#0a0a0a]/95 backdrop-blur-md border-t border-[#1f1f1f] py-4 px-4 space-y-4 rounded-b-2xl mt-4"
             >
               <Link to="/internships" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">Find Internships</Link>
+              <Link to="/career-recommendations" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">Career Paths</Link>
               <Link to="/cv-generator" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">CV Generator</Link>
               <Link to="/tnp-dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">TNP Dashboard</Link>
               <Link to="/admin-panel" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">Admin Panel</Link>
