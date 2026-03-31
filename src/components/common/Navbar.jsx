@@ -43,7 +43,6 @@ const Navbar = () => {
               { name: 'CV Generator', path: '/cv-generator' },
               { name: 'TNP Dashboard', path: '/tnp-dashboard' },
               { name: 'Admin Panel', path: '/admin-panel' },
-              { name: 'About', path: '/about' },
               { name: 'How it Works', path: '/#how-it-works', isHash: true }
             ].map((link) => {
               const isActive = location.pathname === link.path;
@@ -75,7 +74,7 @@ const Navbar = () => {
                     2
                   </span>
                 </Link>
-                <Link to={`/${user.role}`}>
+                <Link to={user.role ? `/${user.role === 'company' ? 'company' : user.role === 'admin' ? 'admin' : 'student'}` : '/select-role'}>
                   <Button variant="ghost" size="sm" className="gap-2">
                     <User className="w-4 h-4" />
                     Dashboard
@@ -119,13 +118,12 @@ const Navbar = () => {
               <Link to="/cv-generator" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">CV Generator</Link>
               <Link to="/tnp-dashboard" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">TNP Dashboard</Link>
               <Link to="/admin-panel" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">Admin Panel</Link>
-              <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">About</Link>
               <a href="/#how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="block text-base font-medium text-[#a1a1aa] hover:text-[#ff6a00] transition-colors py-2">How it Works</a>
               
               <div className="pt-4 border-t border-[#1f1f1f] flex flex-col gap-3">
                 {user ? (
                   <>
-                    <Link to={`/${user.role}`} onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link to={user.role ? `/${user.role === 'company' ? 'company' : user.role === 'admin' ? 'admin' : 'student'}` : '/select-role'} onClick={() => setIsMobileMenuOpen(false)}>
                       <Button variant="ghost" className="w-full justify-start gap-2 h-12 text-white bg-[#111111] hover:bg-[#1a1a1a]">
                         <User className="w-4 h-4" /> Dashboard
                       </Button>

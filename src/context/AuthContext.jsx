@@ -57,6 +57,14 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem('user');
   };
 
+  const setRole = async (role) => {
+    await new Promise(resolve => setTimeout(resolve, 500));
+    const updatedUser = { ...user, role };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+    return updatedUser;
+  };
+
   const updateProfile = async (updates) => {
     await new Promise(resolve => setTimeout(resolve, 800));
     const updatedUser = { ...user, ...updates };
@@ -65,7 +73,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, signup, logout, updateProfile }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, updateProfile, setRole }}>
       {children}
     </AuthContext.Provider>
   );

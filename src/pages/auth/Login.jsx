@@ -27,8 +27,13 @@ export default function Login() {
     try {
       const user = await login(email, password);
       addToast('Welcome back to Workly!', 'success');
-      // Route based on role
-      navigate(`/${user.role}`);
+      
+      // Route based on role existence
+      if (!user.role) {
+         navigate('/select-role');
+      } else {
+         navigate(`/${user.role === 'company' ? 'company' : user.role === 'admin' ? 'admin' : 'student'}`);
+      }
     } catch (err) {
       setError(err.message || 'Failed to login');
     } finally {

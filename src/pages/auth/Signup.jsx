@@ -8,12 +8,10 @@ import Input from '../../components/ui/Input';
 import Button from '../../components/ui/Button';
 
 export default function Signup() {
-  const [role, setRole] = useState('student'); // 'student' or 'company'
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    password: '',
-    companyName: ''
+    password: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,7 +20,7 @@ export default function Signup() {
   const navigate = useNavigate();
 
   const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email);
-  const isFormValid = formData.name.trim() && isEmailValid && formData.password.length >= 6 && (role === 'student' || formData.companyName.trim());
+  const isFormValid = formData.name.trim() && isEmailValid && formData.password.length >= 6;
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -34,21 +32,14 @@ export default function Signup() {
     setLoading(true);
 
     try {
-      // Validate company name if applicable
-      if (role === 'company' && !formData.companyName.trim()) {
-        throw new Error('Company name is required for company accounts.');
-      }
-
       await signup({
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        role: role,
-        companyName: role === 'company' ? formData.companyName : undefined
+        role: null // Enforce generic blank setup interceptor
       });
       addToast('Account created successfully!', 'success');
-      // Route based on newly created role
-      navigate(`/${role}`);
+      navigate('/select-role'); // Shift explicitly to role setup step
     } catch (err) {
       setError(err.message || 'Failed to create account');
     } finally {
@@ -82,30 +73,6 @@ export default function Signup() {
       >
         <div className="bg-[#111111] py-10 px-4 shadow-2xl border border-[#1f1f1f] sm:rounded-3xl sm:px-10">
           
-          {/* Role Toggle */}
-          <div className="flex p-1 bg-[#0a0a0a] rounded-xl mb-8 border border-[#1f1f1f]">
-            <button
-              type="button"
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg flex items-center justify-center transition-all ${
-                role === 'student' ? 'bg-[#1f1f1f] text-white shadow-sm' : 'text-[#a1a1aa] hover:text-white'
-              }`}
-              onClick={() => setRole('student')}
-            >
-              <User className="w-4 h-4 mr-2" />
-              Student
-            </button>
-            <button
-              type="button"
-              className={`flex-1 py-2.5 text-sm font-semibold rounded-lg flex items-center justify-center transition-all ${
-                role === 'company' ? 'bg-[#1f1f1f] text-white shadow-sm' : 'text-[#a1a1aa] hover:text-white'
-              }`}
-              onClick={() => setRole('company')}
-            >
-              <Building className="w-4 h-4 mr-2" />
-              Company
-            </button>
-          </div>
-
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-900/20 border border-red-900/50 rounded-xl p-4">
@@ -133,20 +100,6 @@ export default function Signup() {
               value={formData.email}
               onChange={handleChange}
             />
-
-            {role === 'company' && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }}>
-                <Input
-                  label="Company Name"
-                  type="text"
-                  name="companyName"
-                  required
-                  placeholder="Acme Corp"
-                  value={formData.companyName}
-                  onChange={handleChange}
-                />
-              </motion.div>
-            )}
 
             <Input
               label="Password"

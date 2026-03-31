@@ -22,6 +22,7 @@ import InternshipDetail from './pages/public/InternshipDetail';
 // Auth Pages
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
+import RoleSelection from './pages/auth/RoleSelection';
 
 // Info Pages
 import About from './pages/public/About';
@@ -91,6 +92,7 @@ function App() {
           <Route path="/terms" element={<TermsOfService />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/select-role" element={<RoleSelection />} />
         </Route>
 
         <Route path="/student" element={<StudentDashboard />}>
